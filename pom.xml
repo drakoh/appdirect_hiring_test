@@ -25,8 +25,8 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <!--<configuration>-->
-                    <!--<warSourceDirectory>WebContent</warSourceDirectory>-->
-                    <!--<failOnMissingWebXml>false</failOnMissingWebXml>-->
+                <!--<warSourceDirectory>WebContent</warSourceDirectory>-->
+                <!--<failOnMissingWebXml>false</failOnMissingWebXml>-->
                 <!--</configuration>-->
             </plugin>
             <plugin>
@@ -34,7 +34,17 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
             </plugin>
+
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>0.3.6</version>
+                <configuration>
+                    <appName>appdirect-hiring-test</appName>
+                </configuration>
+            </plugin>
         </plugins>
+
     </build>
 
     <dependencies>
@@ -67,6 +77,21 @@
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>${freemarker.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.10</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.1.2</version>
         </dependency>
     </dependencies>
 
