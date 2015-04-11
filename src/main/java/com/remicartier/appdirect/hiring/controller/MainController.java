@@ -31,7 +31,7 @@ import static org.joox.JOOX.$;
 
 @Controller
 public class MainController {
-    public static final String USER_UNASSIGNMENT = "USER_UNASSIGNMENT";
+    public static final String TYPE_USER_UNASSIGNMENT = "USER_UNASSIGNMENT";
     private final static Logger LOGGER = LoggerFactory.getLogger(MainController.class);
     public static final String TYPE_SUBSCRIPTION_CHANGE = "SUBSCRIPTION_CHANGE";
     public static final String TYPE_SUBSCRIPTION_ORDER = "SUBSCRIPTION_ORDER";
@@ -116,10 +116,11 @@ public class MainController {
     }
 
     protected void processEvent(String xmlResponse) throws IOException, SAXException, EventException {
+        LOGGER.info("XMLResponse = {}", xmlResponse);
         Document document = $(new StringReader(xmlResponse)).document();
         Match match = $(document);
-        AppDirectUser user = extractUser(match);
         String eventType = match.find("type").text();
+        AppDirectUser user = extractUser(match, eventType);
         if (TYPE_SUBSCRIPTION_CHANGE.equals(eventType)) {
             userService.changeUser(user);
         } else if (TYPE_SUBSCRIPTION_ORDER.equals(eventType)) {
@@ -128,16 +129,21 @@ public class MainController {
             userService.unSubscribeUser(user);
         } else if (TYPE_USER_ASSIGNMENT.equals(eventType)) {
             userService.assignUser(user);
-        } else if (USER_UNASSIGNMENT.equals(eventType)) {
+        } else if (TYPE_USER_UNASSIGNMENT.equals(eventType)) {
             userService.unAssignUser(user);
         } else {
             throw new IllegalStateException("Unknown event type : "+eventType);
         }
     }
 
-    protected static AppDirectUser extractUser(Match documentMatch) {
+    protected static AppDirectUser extractUser(Match documentMatch, String eventType) {
         AppDirectUser user = new AppDirectUser();
-        Match userMatch = documentMatch.find("user");
+        Match userMatch;
+        if (TYPE_USER_ASSIGNMENT.equals(eventType) || TYPE_USER_UNASSIGNMENT.equals(eventType)) {
+            userMatch = documentMatch.find("user");
+        } else {
+            userMatch = documentMatch.find("creator");
+        }
         user.setEmail(userMatch.find("email").text());
         user.setFirstName(userMatch.find("firstName").text());
         user.setLastName(userMatch.find("lastName").text());
