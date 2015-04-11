@@ -60,10 +60,10 @@
             <tbody>
             <#list users as user>
             <tr>
-                <td>${attribute.firstName}</td>
-                <td>${attribute.lastName}</td>
-                <td>${attribute.email}</td>
-                <td>${attribute.openId}</td>
+                <td>${user.firstName!"Not Defined"}</td>
+                <td>${user.lastName!"Not Defined"}</td>
+                <td>${user.email!"Not Defined"}</td>
+                <td>${user.openId!"Not Defined"}</td>
             </tr>
             </#list>
             </tbody>

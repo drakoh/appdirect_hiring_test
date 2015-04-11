@@ -50,7 +50,7 @@ public class MainController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(OpenIDAuthenticationToken authentication) {
         LOGGER.info("GET /");
-        Map<String,Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("auth", authentication);
         return new ModelAndView("index", model);
     }
@@ -58,7 +58,7 @@ public class MainController {
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public ModelAndView profile(OpenIDAuthenticationToken authentication) {
         LOGGER.info("GET /profile");
-        Map<String,Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("auth", authentication);
         return new ModelAndView("profile", model);
     }
@@ -66,7 +66,7 @@ public class MainController {
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ModelAndView users(OpenIDAuthenticationToken authentication) {
         LOGGER.info("GET /users");
-        Map<String,Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("users", userService.getUsers());
         return new ModelAndView("users", model);
     }
@@ -80,9 +80,9 @@ public class MainController {
 //            LOGGER.warn("Invalid signature", x);
 //            response.sendError(HttpStatus.FORBIDDEN.value());
 //        }
-        Map<String,Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("openId", openid);
-        return new ModelAndView("login",model);
+        return new ModelAndView("login", model);
     }
 
 
@@ -102,17 +102,20 @@ public class MainController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         String endpointUrlResponse = oAuthSignatureService.requestURL(oauthConsumerKey, oauthConsumerSecret, eventUrl);
+        ResponseEntity<Result> result;
         try {
             processEvent(endpointUrlResponse);
             LOGGER.info("processEvent() Succeeded");
-            return new ResponseEntity<>(new Result(), HttpStatus.OK);//return XML response
+            result = new ResponseEntity<>(new Result(null, null, "OK", true), HttpStatus.OK);//return XML response
         } catch (EventException x) {
             LOGGER.error("processEvent() failed", x);
-            return new ResponseEntity<>(x.getResult(), x.getHttpStatus());
+            result = new ResponseEntity<>(x.getResult(), x.getHttpStatus());
         } catch (Exception x) {
             LOGGER.error("processEvent() failed", x);
-            return new ResponseEntity<>(new Result(), HttpStatus.SERVICE_UNAVAILABLE);//return XML response
+            result = new ResponseEntity<>(new Result(null, x.getMessage(), null, false), HttpStatus.SERVICE_UNAVAILABLE);//return XML response
         }
+        LOGGER.info("events() returned {}", result);
+        return result;
     }
 
     protected void processEvent(String xmlResponse) throws IOException, SAXException, EventException {
@@ -132,7 +135,7 @@ public class MainController {
         } else if (TYPE_USER_UNASSIGNMENT.equals(eventType)) {
             userService.unAssignUser(user);
         } else {
-            throw new IllegalStateException("Unknown event type : "+eventType);
+            throw new IllegalStateException("Unknown event type : " + eventType);
         }
     }
 

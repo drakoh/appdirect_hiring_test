@@ -61,4 +61,14 @@ public class Result {
     public void setSuccess(boolean success) {
         this.success = success;
     }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "accountIdentifier='" + accountIdentifier + '\'' +
+                ", success=" + success +
+                ", message='" + message + '\'' +
+                ", errorCode='" + errorCode + '\'' +
+                '}';
+    }
 }
