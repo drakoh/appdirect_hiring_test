@@ -4,3 +4,5 @@ This app is a challenge for potential candidates at AppDirect.
 It runs on top of spring boot, use openid with appdirect as openid provider.
 
 Can be deployed with maven using: `mvn clean heroku:deploy`
+
+There is a running instance on heroku here : http://appdirect-hiring-test.herokuapp.com/
