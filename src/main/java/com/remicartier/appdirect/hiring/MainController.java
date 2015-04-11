@@ -58,7 +58,7 @@ public class MainController {
         LOGGER.info("GET /users");
         Map<String,Object> model = new HashMap<>();
         model.put("users", userService.getUsers());
-        return new ModelAndView("profile", model);
+        return new ModelAndView("users", model);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
