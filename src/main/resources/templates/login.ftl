@@ -23,6 +23,9 @@
     <![endif]-->
   </head>
   <body>
-
+    <form action="/login/openid" method="POST">
+      OpenId: <input name="openid_identifier" value="${openId}" /><br/>
+      <input type="submit" value="Log in with AppDirect" />
+    </form>
   </body>
 </html>
