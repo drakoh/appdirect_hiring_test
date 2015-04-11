@@ -23,8 +23,9 @@
     <![endif]-->
   </head>
   <body>
+    You need to be logged to proceed<br/>
     <form action="/login/openid" method="POST">
-      OpenId: <input name="openid_identifier" value="${openId}" /><br/>
+      OpenId: <input name="openid_identifier" value="${openId!""}" /><br/>
       <input type="submit" value="Log in with AppDirect" />
     </form>
   </body>

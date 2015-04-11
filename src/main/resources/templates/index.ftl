@@ -23,6 +23,7 @@
     <![endif]-->
   </head>
   <body>
-  Content pending ...
+  Content pending ...<br/>
+  <a href="/logout">Logout</a>
   </body>
 </html>

@@ -11,6 +11,7 @@ import org.springframework.security.openid.OpenIDAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.joox.JOOX.$;
 
@@ -36,25 +39,25 @@ public class MainController {
     private UserService userService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index(@ModelAttribute("model") ModelMap model, OpenIDAuthenticationToken authentication) {
+    public ModelAndView index(OpenIDAuthenticationToken authentication) {
         LOGGER.info("GET /");
-        model.addAttribute("auth", authentication);
-        return "index";
+        Map<String,Object> model = new HashMap<>();
+        model.put("auth", authentication);
+        return new ModelAndView("index", model);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    String login(@ModelAttribute("model") ModelMap model, @RequestParam("openid") String openid, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    public ModelAndView login(@RequestParam(value = "openid", required = false) String openid, HttpServletResponse response, HttpServletRequest request) throws Exception {
         LOGGER.info("GET /login?openid={}", openid);
-        try {
-            oAuthSignatureService.verifyRequest(oauthConsumerKey, oauthConsumerSecret, request);
-        } catch (Exception x) {
-            LOGGER.warn("Invalid signature", x);
-            response.sendError(HttpStatus.FORBIDDEN.value());
-        }
-        model.addAttribute("openId", openid);
-        return "login";
+//        try {
+//            oAuthSignatureService.verifyRequest(oauthConsumerKey, oauthConsumerSecret, request);
+//        } catch (Exception x) {
+//            LOGGER.warn("Invalid signature", x);
+//            response.sendError(HttpStatus.FORBIDDEN.value());
+//        }
+        Map<String,Object> model = new HashMap<>();
+        model.put("openId", openid);
+        return new ModelAndView("login",model);
     }
 
 
