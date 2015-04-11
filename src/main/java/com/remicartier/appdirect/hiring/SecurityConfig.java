@@ -1,5 +1,6 @@
 package com.remicartier.appdirect.hiring;
 
+import com.remicartier.appdirect.hiring.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;

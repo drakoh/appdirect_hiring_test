@@ -1,4 +1,4 @@
-package com.remicartier.appdirect.hiring;
+package com.remicartier.appdirect.hiring.service;
 
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;

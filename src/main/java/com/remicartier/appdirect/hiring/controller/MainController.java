@@ -1,5 +1,10 @@
-package com.remicartier.appdirect.hiring;
+package com.remicartier.appdirect.hiring.controller;
 
+import com.remicartier.appdirect.hiring.exception.EventException;
+import com.remicartier.appdirect.hiring.model.AppDirectUser;
+import com.remicartier.appdirect.hiring.model.Result;
+import com.remicartier.appdirect.hiring.service.OAuthSignatureService;
+import com.remicartier.appdirect.hiring.service.UserService;
 import org.joox.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

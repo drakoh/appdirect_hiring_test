@@ -1,4 +1,4 @@
-package com.remicartier.appdirect.hiring;
+package com.remicartier.appdirect.hiring.model;
 
 /**
  * Created by IntelliJ IDEA.

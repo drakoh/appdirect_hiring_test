@@ -1,4 +1,4 @@
-package com.remicartier.appdirect.hiring;
+package com.remicartier.appdirect.hiring.service;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 

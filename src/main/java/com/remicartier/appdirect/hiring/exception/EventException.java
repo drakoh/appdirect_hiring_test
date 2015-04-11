@@ -1,5 +1,6 @@
-package com.remicartier.appdirect.hiring;
+package com.remicartier.appdirect.hiring.exception;
 
+import com.remicartier.appdirect.hiring.model.Result;
 import org.springframework.http.HttpStatus;
 
 /**

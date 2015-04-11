@@ -1,5 +1,6 @@
-package com.remicartier.appdirect.hiring;
+package com.remicartier.appdirect.hiring.service;
 
+import com.remicartier.appdirect.hiring.model.AppDirectUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,8 +26,8 @@ public class DBService {
     }
 
     public void addUser(AppDirectUser user) {
-        int affectedRows = jdbcTemplate.update("INSERT INTO public.user (email,first_name,last_name,open_id,uuid,account_identifier,language) VALUES (?,?,?,?,?,?,?) WHERE open_id = ?",
-                user.getEmail(), user.getFirstName(), user.getLastName(), user.getOpenId(), user.getUuid(), user.getAccountIdentifier(), user.getLanguage(), user.getOpenId());
+        int affectedRows = jdbcTemplate.update("INSERT INTO public.user (email,first_name,last_name,open_id,uuid,account_identifier,language) VALUES (?,?,?,?,?,?,?)",
+                user.getEmail(), user.getFirstName(), user.getLastName(), user.getOpenId(), user.getUuid(), user.getAccountIdentifier(), user.getLanguage());
         if (affectedRows != 1) {
             throw new IllegalStateException("Unable to insert, affected rows = " + affectedRows);
         }

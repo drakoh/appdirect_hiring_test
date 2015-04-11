@@ -1,4 +1,4 @@
-package com.remicartier.appdirect.hiring;
+package com.remicartier.appdirect.hiring.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

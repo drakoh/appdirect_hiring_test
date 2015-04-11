@@ -1,5 +1,8 @@
-package com.remicartier.appdirect.hiring;
+package com.remicartier.appdirect.hiring.service;
 
+import com.remicartier.appdirect.hiring.model.AppDirectUser;
+import com.remicartier.appdirect.hiring.model.Result;
+import com.remicartier.appdirect.hiring.exception.EventException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
