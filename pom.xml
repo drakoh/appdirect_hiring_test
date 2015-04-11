@@ -9,6 +9,9 @@
         <spring.version>4.1.6.RELEASE</spring.version>
         <jetty.version>9.2.11.M0</jetty.version>
         <freemarker.version>2.3.22</freemarker.version>
+        <logback.version>1.1.2</logback.version>
+        <slf4j-api.version>1.7.10</slf4j-api.version>
+        <signpost.version>1.2.1.2</signpost.version>
     </properties>
 
     <build>
@@ -24,10 +27,6 @@
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
-                <!--<configuration>-->
-                <!--<warSourceDirectory>WebContent</warSourceDirectory>-->
-                <!--<failOnMissingWebXml>false</failOnMissingWebXml>-->
-                <!--</configuration>-->
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
@@ -81,17 +80,22 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.10</version>
+            <version>${slf4j-api.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.2</version>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.1.2</version>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>oauth.signpost</groupId>
+            <artifactId>signpost-core</artifactId>
+            <version>${signpost.version}</version>
         </dependency>
     </dependencies>
 
