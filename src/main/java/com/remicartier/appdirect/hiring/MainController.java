@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.openid.OpenIDAuthenticationToken;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
@@ -46,6 +45,22 @@ public class MainController {
         return new ModelAndView("index", model);
     }
 
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public ModelAndView profile(OpenIDAuthenticationToken authentication) {
+        LOGGER.info("GET /profile");
+        Map<String,Object> model = new HashMap<>();
+        model.put("auth", authentication);
+        return new ModelAndView("profile", model);
+    }
+
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ModelAndView users(OpenIDAuthenticationToken authentication) {
+        LOGGER.info("GET /users");
+        Map<String,Object> model = new HashMap<>();
+        model.put("users", userService.getUsers());
+        return new ModelAndView("profile", model);
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView login(@RequestParam(value = "openid", required = false) String openid, HttpServletResponse response, HttpServletRequest request) throws Exception {
         LOGGER.info("GET /login?openid={}", openid);
@@ -66,7 +81,7 @@ public class MainController {
     @ResponseBody
     ResponseEntity<Result> events(@RequestParam("eventUrl") String eventUrl,
                                   HttpServletRequest request) throws Exception {
-        LOGGER.info("GET /events?eventUrl=", eventUrl);
+        LOGGER.info("GET /events?eventUrl={}", eventUrl);
         if (eventUrl.contains("dummy")) {
             return new ResponseEntity<>(new Result(null, null, "OK", true), HttpStatus.OK);//return XML response
         }
@@ -127,46 +142,4 @@ public class MainController {
         user.setAccountIdentifier(accountMatch.find("accountIdentifier").text());
         return user;
     }
-
-//    public static void main(String[] args) throws IOException, SAXException {
-//        String xml = "<event xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-//                "<type>USER_UNASSIGNMENT</type>\n" +
-//                "<marketplace>\n" +
-//                "<baseUrl>https://acme.appdirect.com</baseUrl>\n" +
-//                "<partner>ACME</partner>\n" +
-//                "</marketplace>\n" +
-//                "<flag>STATELESS</flag>\n" +
-//                "<creator>\n" +
-//                "<email>test-email+creator@appdirect.com</email>\n" +
-//                "<firstName>DummyCreatorFirst</firstName>\n" +
-//                "<language>fr</language>\n" +
-//                "<lastName>DummyCreatorLast</lastName>\n" +
-//                "<openId>\n" +
-//                "https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
-//                "</openId>\n" +
-//                "<uuid>ec5d8eda-5cec-444d-9e30-125b6e4b67e2</uuid>\n" +
-//                "</creator>\n" +
-//                "<payload>\n" +
-//                "<account>\n" +
-//                "<accountIdentifier>dummy-account</accountIdentifier>\n" +
-//                "<status>ACTIVE</status>\n" +
-//                "</account>\n" +
-//                "<configuration/>\n" +
-//                "<user>\n" +
-//                "<email>test-email@appdirect.com</email>\n" +
-//                "<firstName>DummyFirst</firstName>\n" +
-//                "<language>fr</language>\n" +
-//                "<lastName>DummyLast</lastName>\n" +
-//                "<openId>\n" +
-//                "https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
-//                "</openId>\n" +
-//                "<uuid>ec5d8eda-5cec-444d-9e30-125b6e4b67e2</uuid>\n" +
-//                "</user>\n" +
-//                "</payload>\n" +
-//                "</event>";
-//        Document document = $(new StringReader(xml)).document();
-//        Match match = $(document);
-//        AppDirectUser user = extractUser(match);
-//        System.out.println(user);
-//    }
 }

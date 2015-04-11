@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: remicartier
@@ -68,5 +70,9 @@ public class UserService {
         } catch (Exception x) {
             throw new EventException(x, new Result(user.getAccountIdentifier(), "USER_NOT_FOUND", "Unable to remove user", false), HttpStatus.OK);
         }
+    }
+
+    public List<AppDirectUser> getUsers() {
+        return dbService.getUsers();
     }
 }
