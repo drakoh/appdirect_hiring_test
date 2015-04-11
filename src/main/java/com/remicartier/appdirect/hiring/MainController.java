@@ -26,7 +26,12 @@ import static org.joox.JOOX.$;
 
 @Controller
 public class MainController {
+    public static final String USER_UNASSIGNMENT = "USER_UNASSIGNMENT";
     private final static Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+    public static final String TYPE_SUBSCRIPTION_CHANGE = "SUBSCRIPTION_CHANGE";
+    public static final String TYPE_SUBSCRIPTION_ORDER = "SUBSCRIPTION_ORDER";
+    public static final String TYPE_SUBSCRIPTION_CANCEL = "SUBSCRIPTION_CANCEL";
+    public static final String TYPE_USER_ASSIGNMENT = "USER_ASSIGNMENT";
 
     @Value("${oauth.consumer.key}")
     private String oauthConsumerKey;
@@ -110,22 +115,18 @@ public class MainController {
         Match match = $(document);
         AppDirectUser user = extractUser(match);
         String eventType = match.find("type").text();
-        switch (eventType) {
-            case "SUBSCRIPTION_CHANGE":
-                userService.changeUser(user);
-                break;
-            case "SUBSCRIPTION_ORDER":
-                userService.subscribeUser(user);
-                break;
-            case "SUBSCRIPTION_CANCEL":
-                userService.unSubscribeUser(user);
-                break;
-            case "USER_ASSIGNMENT":
-                userService.assignUser(user);
-                break;
-            case "USER_UNASSIGNMENT":
-                userService.unAssignUser(user);
-                break;
+        if (TYPE_SUBSCRIPTION_CHANGE.equals(eventType)) {
+            userService.changeUser(user);
+        } else if (TYPE_SUBSCRIPTION_ORDER.equals(eventType)) {
+            userService.subscribeUser(user);
+        } else if (TYPE_SUBSCRIPTION_CANCEL.equals(eventType)) {
+            userService.unSubscribeUser(user);
+        } else if (TYPE_USER_ASSIGNMENT.equals(eventType)) {
+            userService.assignUser(user);
+        } else if (USER_UNASSIGNMENT.equals(eventType)) {
+            userService.unAssignUser(user);
+        } else {
+            throw new IllegalStateException("Unknown event type : "+eventType);
         }
     }
 
