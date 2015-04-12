@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar appdirect-hiring-test-1.0.0-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar target/appdirect-hiring-test-1.0.0-SNAPSHOT.jar
