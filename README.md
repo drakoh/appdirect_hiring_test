@@ -10,19 +10,18 @@ There is a running instance on heroku here : http://appdirect-hiring-test.heroku
 To run a  local instance, use : `mvn spring-boot:run`, the app will be bound to port 8080. (You will have to modify `application.properties` to change the db settings)
 
 Db Schema is : `
-CREATE TABLE "user" (
-                    email text,
-                    first_name text,
-                    last_name text,
-                    uuid text,
-                    open_id text NOT NULL,
-                    account_identifier text,
-                    language text
-                );
+    CREATE TABLE "user" (
+        email text,
+        first_name text,
+        last_name text,
+        uuid text,
+        open_id text NOT NULL,
+        account_identifier text,
+        language text
+    );
 
-
-                ALTER TABLE ONLY "user"
-                    ADD CONSTRAINT open_id_pk PRIMARY KEY (open_id);
+    ALTER TABLE ONLY "user"
+        ADD CONSTRAINT open_id_pk PRIMARY KEY (open_id);
 `
 
 So far code coverage is about 85+% (based on lines)
