@@ -6,3 +6,7 @@ It runs on top of spring boot, use openid with appdirect as openid provider, boo
 Can be deployed with maven using: `mvn clean heroku:deploy`
 
 There is a running instance on heroku here : http://appdirect-hiring-test.herokuapp.com/
+
+To run a  local instance, use : `mvn spring-boot:run`, the app will be bound to port 8080.
+
+So far code coverage is about 85+% (based on lines)
