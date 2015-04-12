@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -cp target/classes:target/dependency/* com.remicartier.appdirect.hiring.Application
+web: java -Dserver.port=$PORT -jar appdirect-hiring-test-1.0.0-SNAPSHOT.jar
