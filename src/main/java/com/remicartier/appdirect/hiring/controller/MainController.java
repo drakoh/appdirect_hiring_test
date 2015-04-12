@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,7 +102,7 @@ public class MainController {
             LOGGER.warn("Unable to verify request", x);
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        String endpointUrlResponse = oAuthSignatureService.requestURL(oauthConsumerKey, oauthConsumerSecret, eventUrl);
+        String endpointUrlResponse = oAuthSignatureService.requestURL(oauthConsumerKey, oauthConsumerSecret, new URL(eventUrl));
         ResponseEntity<Result> result;
         try {
             processEvent(endpointUrlResponse);

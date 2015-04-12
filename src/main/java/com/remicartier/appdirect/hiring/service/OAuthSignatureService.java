@@ -20,18 +20,16 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OAuthSignatureService {
-    private final static Logger LOGGER = Logger.getLogger(OAuthSignatureService.class);
     public static final String HEADER_X_FORWARDED_PROTO = "x-forwarded-proto";
+    public static final String HEADER_HOST = "host";
 
-    public String requestURL(String consumerKey, String consumerSecret, String endpointURL) throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException {
+    public String requestURL(String consumerKey, String consumerSecret, URL endpointURL) throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException {
         OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
-        URL url = new URL(endpointURL);
-        HttpURLConnection request = (HttpURLConnection) url.openConnection();
+        HttpURLConnection request = (HttpURLConnection) endpointURL.openConnection();
         consumer.sign(request);
         request.connect();
 
@@ -57,8 +55,8 @@ public class OAuthSignatureService {
         String containerEndpointURLString = net.oauth.server.OAuthServlet.getRequestURL(request);
         if (isRequestBehindProxy) {
             URL endpointURL = new URL(containerEndpointURLString);
-            String host = request.getHeader("host");
-            String scheme = request.getHeader("x-forwarded-proto");
+            String host = request.getHeader(HEADER_HOST);
+            String scheme = request.getHeader(HEADER_X_FORWARDED_PROTO);
             URI proxyEndpointURL = new URI(scheme, host, endpointURL.getPath(), null);
             return proxyEndpointURL.toString();
         } else {

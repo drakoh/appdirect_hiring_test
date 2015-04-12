@@ -52,7 +52,7 @@ public class DBService {
         return jdbcTemplate.query("SELECT email,first_name,last_name,open_id,uuid,account_identifier,language FROM public.user", new Object[0], new AppDirectUserRowMapper());
     }
 
-    private static class AppDirectUserRowMapper implements RowMapper<AppDirectUser> {
+    protected static class AppDirectUserRowMapper implements RowMapper<AppDirectUser> {
         @Override
         public AppDirectUser mapRow(ResultSet resultSet, int i) throws SQLException {
             AppDirectUser appDirectUser = new AppDirectUser();
