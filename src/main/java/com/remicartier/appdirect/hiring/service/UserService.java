@@ -1,8 +1,10 @@
 package com.remicartier.appdirect.hiring.service;
 
+import com.remicartier.appdirect.hiring.controller.MainController;
 import com.remicartier.appdirect.hiring.model.AppDirectUser;
 import com.remicartier.appdirect.hiring.model.Result;
 import com.remicartier.appdirect.hiring.exception.EventException;
+import org.joox.Match;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -77,5 +79,24 @@ public class UserService {
 
     public List<AppDirectUser> getUsers() {
         return dbService.getUsers();
+    }
+
+    public AppDirectUser extractUser(Match documentMatch, String eventType) {
+        AppDirectUser user = new AppDirectUser();
+        Match userMatch;
+        if (MainController.TYPE_USER_ASSIGNMENT.equals(eventType) || MainController.TYPE_USER_UNASSIGNMENT.equals(eventType)) {
+            userMatch = documentMatch.find("user");
+        } else {
+            userMatch = documentMatch.find("creator");
+        }
+        user.setEmail(userMatch.find("email").text());
+        user.setFirstName(userMatch.find("firstName").text());
+        user.setLastName(userMatch.find("lastName").text());
+        user.setLanguage(userMatch.find("language").text());
+        user.setOpenId(userMatch.find("openId").text());
+        user.setUuid(userMatch.find("uuid").text());
+        Match accountMatch = documentMatch.find("account");
+        user.setAccountIdentifier(accountMatch.find("accountIdentifier").text());
+        return user;
     }
 }

@@ -65,9 +65,9 @@
                 <td>${attribute.name}</td>
                 <td>
                     <dl>
-                    <#list attribute.values as value>
-                        <dd>${value}</dd>
-                    </#list>
+                        <#list attribute.values as value>
+                            <dd>${value}</dd>
+                        </#list>
                     </dl>
                 </td>
             </tr>

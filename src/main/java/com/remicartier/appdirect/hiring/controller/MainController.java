@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.openid.OpenIDAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -32,8 +33,9 @@ import static org.joox.JOOX.$;
 
 @Controller
 public class MainController {
-    public static final String TYPE_USER_UNASSIGNMENT = "USER_UNASSIGNMENT";
     private final static Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+
+    public static final String TYPE_USER_UNASSIGNMENT = "USER_UNASSIGNMENT";
     public static final String TYPE_SUBSCRIPTION_CHANGE = "SUBSCRIPTION_CHANGE";
     public static final String TYPE_SUBSCRIPTION_ORDER = "SUBSCRIPTION_ORDER";
     public static final String TYPE_SUBSCRIPTION_CANCEL = "SUBSCRIPTION_CANCEL";
@@ -47,6 +49,25 @@ public class MainController {
     private OAuthSignatureService oAuthSignatureService;
     @Autowired
     private UserService userService;
+
+    //Setters mostly used for unit tests
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @SuppressWarnings("unused")
+    public void setOauthConsumerKey(String oauthConsumerKey) {
+        this.oauthConsumerKey = oauthConsumerKey;
+    }
+
+    @SuppressWarnings("unused")
+    public void setOauthConsumerSecret(String oauthConsumerSecret) {
+        this.oauthConsumerSecret = oauthConsumerSecret;
+    }
+
+    public void setoAuthSignatureService(OAuthSignatureService oAuthSignatureService) {
+        this.oAuthSignatureService = oAuthSignatureService;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(OpenIDAuthenticationToken authentication) {
@@ -75,6 +96,7 @@ public class MainController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView login(@RequestParam(value = "openid", required = false) String openid, HttpServletResponse response, HttpServletRequest request) throws Exception {
         LOGGER.info("GET /login?openid={}", openid);
+//At the beginning I thought we had to validate if the request was coming from AppDirect
 //        try {
 //            oAuthSignatureService.verifyRequest(oauthConsumerKey, oauthConsumerSecret, request);
 //        } catch (Exception x) {
@@ -87,7 +109,7 @@ public class MainController {
     }
 
 
-    @RequestMapping(value = "/events", method = RequestMethod.GET)
+    @RequestMapping(value = "/events", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
     public
     @ResponseBody
     ResponseEntity<Result> events(@RequestParam("eventUrl") String eventUrl,
@@ -102,18 +124,18 @@ public class MainController {
             LOGGER.warn("Unable to verify request", x);
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        String endpointUrlResponse = oAuthSignatureService.requestURL(oauthConsumerKey, oauthConsumerSecret, new URL(eventUrl));
         ResponseEntity<Result> result;
         try {
+            String endpointUrlResponse = oAuthSignatureService.requestURL(oauthConsumerKey, oauthConsumerSecret, new URL(eventUrl));
             processEvent(endpointUrlResponse);
             LOGGER.info("processEvent() Succeeded");
-            result = new ResponseEntity<>(new Result(null, null, "OK", true), HttpStatus.OK);//return XML response
+            result = new ResponseEntity<>(new Result(null, null, "OK", true), HttpStatus.OK);
         } catch (EventException x) {
             LOGGER.error("processEvent() failed", x);
             result = new ResponseEntity<>(x.getResult(), x.getHttpStatus());
         } catch (Exception x) {
             LOGGER.error("processEvent() failed", x);
-            result = new ResponseEntity<>(new Result(null, x.getMessage(), null, false), HttpStatus.SERVICE_UNAVAILABLE);//return XML response
+            result = new ResponseEntity<>(new Result(null, x.getMessage(), null, false), HttpStatus.SERVICE_UNAVAILABLE);
         }
         LOGGER.info("events() returned {}", result);
         return result;
@@ -124,38 +146,26 @@ public class MainController {
         Document document = $(new StringReader(xmlResponse)).document();
         Match match = $(document);
         String eventType = match.find("type").text();
-        AppDirectUser user = extractUser(match, eventType);
-        if (TYPE_SUBSCRIPTION_CHANGE.equals(eventType)) {
-            userService.changeUser(user);
-        } else if (TYPE_SUBSCRIPTION_ORDER.equals(eventType)) {
-            userService.subscribeUser(user);
-        } else if (TYPE_SUBSCRIPTION_CANCEL.equals(eventType)) {
-            userService.unSubscribeUser(user);
-        } else if (TYPE_USER_ASSIGNMENT.equals(eventType)) {
-            userService.assignUser(user);
-        } else if (TYPE_USER_UNASSIGNMENT.equals(eventType)) {
-            userService.unAssignUser(user);
-        } else {
-            throw new IllegalStateException("Unknown event type : " + eventType);
+        AppDirectUser user = userService.extractUser(match, eventType);
+        switch (eventType) {
+            case TYPE_SUBSCRIPTION_CHANGE:
+                userService.changeUser(user);
+                break;
+            case TYPE_SUBSCRIPTION_ORDER:
+                userService.subscribeUser(user);
+                break;
+            case TYPE_SUBSCRIPTION_CANCEL:
+                userService.unSubscribeUser(user);
+                break;
+            case TYPE_USER_ASSIGNMENT:
+                userService.assignUser(user);
+                break;
+            case TYPE_USER_UNASSIGNMENT:
+                userService.unAssignUser(user);
+                break;
+            default:
+                throw new IllegalStateException("Unknown event type : " + eventType);
         }
     }
 
-    protected static AppDirectUser extractUser(Match documentMatch, String eventType) {
-        AppDirectUser user = new AppDirectUser();
-        Match userMatch;
-        if (TYPE_USER_ASSIGNMENT.equals(eventType) || TYPE_USER_UNASSIGNMENT.equals(eventType)) {
-            userMatch = documentMatch.find("user");
-        } else {
-            userMatch = documentMatch.find("creator");
-        }
-        user.setEmail(userMatch.find("email").text());
-        user.setFirstName(userMatch.find("firstName").text());
-        user.setLastName(userMatch.find("lastName").text());
-        user.setLanguage(userMatch.find("language").text());
-        user.setOpenId(userMatch.find("openId").text());
-        user.setUuid(userMatch.find("uuid").text());
-        Match accountMatch = documentMatch.find("account");
-        user.setAccountIdentifier(accountMatch.find("accountIdentifier").text());
-        return user;
-    }
 }

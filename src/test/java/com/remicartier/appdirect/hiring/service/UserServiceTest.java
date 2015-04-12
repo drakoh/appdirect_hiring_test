@@ -3,6 +3,8 @@ package com.remicartier.appdirect.hiring.service;
 import com.remicartier.appdirect.hiring.Application;
 import com.remicartier.appdirect.hiring.exception.EventException;
 import com.remicartier.appdirect.hiring.model.AppDirectUser;
+import org.apache.commons.io.IOUtils;
+import org.joox.Match;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,10 +18,15 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.UncategorizedScriptException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.joox.JOOX.$;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -241,5 +248,35 @@ public class UserServiceTest {
         List<AppDirectUser> appDirectUserList = userService.getUsers();
         assertNotNull(appDirectUserList);
         assertEquals(3, appDirectUserList.size());
+    }
+
+    @Test
+    public void testExtractUser() throws IOException, SAXException {
+        AppDirectUser user;
+        user = userService.extractUser(getMatch("dummyOrder.xml"), "SUBSCRIPTION_ORDER");
+        assertEquals("AppDirectUser{accountIdentifier='null', email='test-email+creator@appdirect.com', firstName='DummyCreatorFirst', lastName='DummyCreatorLast', language='fr', openId='\n" +
+                "            https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
+                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+        user = userService.extractUser(getMatch("dummyChange.xml"), "SUBSCRIPTION_CHANGE");
+        assertEquals("AppDirectUser{accountIdentifier='dummy-account', email='test-email+creator@appdirect.com', firstName='DummyCreatorFirst', lastName='DummyCreatorLast', language='fr', openId='\n" +
+                "            https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
+                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+        user = userService.extractUser(getMatch("dummyCancel.xml"), "SUBSCRIPTION_CANCEL");
+        assertEquals("AppDirectUser{accountIdentifier='dummy-account', email='test-email+creator@appdirect.com', firstName='DummyCreatorFirst', lastName='DummyCreatorLast', language='fr', openId='\n" +
+                "            https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
+                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+        user = userService.extractUser(getMatch("dummyAssign.xml"), "USER_ASSIGNMENT");
+        assertEquals("AppDirectUser{accountIdentifier='dummy-account', email='test-email@appdirect.com', firstName='DummyFirst', lastName='DummyLast', language='fr', openId='\n" +
+                "                https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
+                "            ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+        user = userService.extractUser(getMatch("dummyUnassign.xml"), "USER_UNASSIGNMENT");
+        assertEquals("AppDirectUser{accountIdentifier='dummy-account', email='test-email@appdirect.com', firstName='DummyFirst', lastName='DummyLast', language='fr', openId='\n" +
+                "                https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
+                "            ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+    }
+
+    private Match getMatch(String resource) throws IOException, SAXException {
+        Document document = $(new StringReader(IOUtils.toString(getClass().getClassLoader().getResourceAsStream(resource)))).document();
+        return $(document);
     }
 }

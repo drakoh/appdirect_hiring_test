@@ -41,15 +41,18 @@
               <li class="active"><a href="/">Home</a></li>
               <li><a href="/profile">Profile</a></li>
               <li><a href="/users">Users</a></li>
-              <li><a href="/logout">Logout</a></li>
+              <#if auth??>
+                <li><a href="/logout">Logout</a></li>
+              </#if>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
   </nav>
 
       <div class="container">
+        <h1>Welcome to AppDirect Integration Demo Application</h1>
         Use the upper menu to navigate on the web site.<br/>
-        However for most of the sections you have to be logged via openID.
+        However for most of the sections you have to be logged via openID with AppDirect
       </div>
 
   </body>
