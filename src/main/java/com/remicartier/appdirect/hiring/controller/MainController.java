@@ -131,7 +131,7 @@ public class MainController {
             LOGGER.info("processEvent() Succeeded");
             result = new ResponseEntity<>(new Result(null, null, "OK", true), HttpStatus.OK);
         } catch (EventException x) {
-            LOGGER.error("processEvent() failed", x);
+            LOGGER.error("processEvent() failed with EventException");
             result = new ResponseEntity<>(x.getResult(), x.getHttpStatus());
         } catch (Exception x) {
             LOGGER.error("processEvent() failed", x);
