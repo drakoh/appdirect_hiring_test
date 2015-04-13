@@ -14,6 +14,24 @@ public class AppDirectUser {
     private String openId;
     private String uuid;
     private String accountIdentifier;
+    private String company;
+    private boolean admin;
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
 
     public String getEmail() {
         return email;
@@ -81,6 +99,8 @@ public class AppDirectUser {
                 ", language='" + language + '\'' +
                 ", openId='" + openId + '\'' +
                 ", uuid='" + uuid + '\'' +
+                ", company='" + company + '\'' +
+                ", admin=" + admin +
                 '}';
     }
 }

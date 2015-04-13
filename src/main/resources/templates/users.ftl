@@ -55,6 +55,8 @@
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>OpenID</th>
+                <th>Company</th>
+                <th>Admin</th>
             </tr>
             </thead>
             <tbody>
@@ -64,6 +66,8 @@
                 <td>${user.lastName!"Not Defined"}</td>
                 <td>${user.email!"Not Defined"}</td>
                 <td>${user.openId!"Not Defined"}</td>
+                <td>${user.company!"Not Defined"}</td>
+                <td>${user.admin!"Not Defined"}</td>
             </tr>
             </#list>
             </tbody>

@@ -9,8 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,7 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -51,26 +48,24 @@ public class DBServiceTest {
         DBService.AppDirectUserRowMapper mapper = new DBService.AppDirectUserRowMapper();
 
         ResultSet resultSet = mock(ResultSet.class);
-        when(resultSet.getString(anyInt())).thenReturn("email").thenReturn("firstName").thenReturn("lastName").thenReturn("openid").thenReturn("accoundId").thenReturn("en");
+        when(resultSet.getString(anyInt())).thenReturn("email").thenReturn("firstName").thenReturn("lastName").thenReturn("openid").thenReturn("accoundId").thenReturn("en").thenReturn("company");
+        when(resultSet.getBoolean(anyInt())).thenReturn(true);
 
         AppDirectUser appDirectUser = mapper.mapRow(resultSet, 0);
 
-        assertEquals("AppDirectUser{accountIdentifier='accoundId', email='email', firstName='firstName', lastName='lastName', language='en', openId='openid', uuid='null'}", appDirectUser.toString());
+        assertEquals("AppDirectUser{accountIdentifier='accoundId', email='email', firstName='firstName', lastName='lastName', language='en', openId='openid', uuid='null', company='company', admin=true}", appDirectUser.toString());
     }
 
     @Test
-    public void testDoesUserExist() {
+    public void testGetUserByOpenID() {
         //noinspection unchecked
-        when(jdbcTemplate.query(anyString(), any(Object[].class), any(RowMapper.class))).thenAnswer(new Answer<List<AppDirectUser>>() {
-            @Override
-            public List<AppDirectUser> answer(InvocationOnMock invocationOnMock) throws Throwable {
-                assertEquals("openid", ((Object[]) invocationOnMock.getArguments()[1])[0]);
-                return Collections.singletonList(new AppDirectUser());
-            }
+        when(jdbcTemplate.query(anyString(), any(Object[].class), any(RowMapper.class))).thenAnswer(invocationOnMock -> {
+            assertEquals("openid", ((Object[]) invocationOnMock.getArguments()[1])[0]);
+            return Collections.singletonList(new AppDirectUser());
         });
         AppDirectUser appDirectUser = new AppDirectUser();
         appDirectUser.setOpenId("openid");
-        assertTrue(dbService.doesUserExist(appDirectUser));
+        assertTrue(dbService.getUserByOpenID(appDirectUser.getOpenId()) != null);
     }
 
     @Test

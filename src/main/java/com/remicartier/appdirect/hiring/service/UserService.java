@@ -23,57 +23,65 @@ public class UserService {
     private DBService dbService;
 
     public void subscribeUser(AppDirectUser user) throws EventException {
-        if (dbService.doesUserExist(user)) {
-            throw new EventException(null, new Result(user.getAccountIdentifier(), "ALREADY_SUBSCRIBED", null, false), HttpStatus.OK);
+        AppDirectUser dbUser = dbService.getUserByOpenID(user.getOpenId());
+        if (dbUser != null) {
+            throw new EventException(null, new Result(user.getAccountIdentifier(), "USER_ALREADY_EXISTS", null, false), HttpStatus.OK);
         }
         try {
             dbService.addUser(user);
         } catch (Exception x) {
-            throw new EventException(x, new Result(user.getAccountIdentifier(), "ALREADY_SUBSCRIBED", null, false), HttpStatus.OK);
+            throw new EventException(x, new Result(user.getAccountIdentifier(), "INVALID_RESPONSE", "Unable to subscribe user", false), HttpStatus.OK);
         }
     }
 
     public void unSubscribeUser(AppDirectUser user) throws EventException {
-        if (!dbService.doesUserExist(user)) {
-            throw new EventException(null, new Result(user.getAccountIdentifier(), "ACCOUNT_NOT_FOUND", "Unable to remove user", false), HttpStatus.OK);
+        AppDirectUser dbUser = dbService.getUserByOpenID(user.getOpenId());
+        if (dbUser == null) {
+            throw new EventException(null, new Result(user.getAccountIdentifier(), "ACCOUNT_NOT_FOUND", "Unable to unsubscribe user", false), HttpStatus.OK);
         }
         try {
             dbService.deleteUser(user);
         } catch (Exception x) {
-            throw new EventException(x, new Result(user.getAccountIdentifier(), "ACCOUNT_NOT_FOUND", "Unable to remove user", false), HttpStatus.OK);
+            throw new EventException(x, new Result(user.getAccountIdentifier(), "INVALID_RESPONSE", "Unable to unsubscribe user", false), HttpStatus.OK);
         }
     }
 
     public void changeUser(AppDirectUser user) throws EventException {
-        if (!dbService.doesUserExist(user)) {
+        AppDirectUser dbUser = dbService.getUserByOpenID(user.getOpenId());
+        if (dbUser == null) {
             throw new EventException(null, new Result(user.getAccountIdentifier(), "ACCOUNT_NOT_FOUND", "Unable to remove user", false), HttpStatus.OK);
         }
         try {
             dbService.updateUser(user);
         } catch (Exception x) {
-            throw new EventException(x, new Result(user.getAccountIdentifier(), "ACCOUNT_NOT_FOUND", "Unable to remove user", false), HttpStatus.OK);
+            throw new EventException(x, new Result(user.getAccountIdentifier(), "INVALID_RESPONSE", "Unable to remove user", false), HttpStatus.OK);
         }
     }
 
     public void assignUser(AppDirectUser user) throws EventException {
-        if (dbService.doesUserExist(user)) {
+        AppDirectUser dbUser = dbService.getUserByOpenID(user.getOpenId());
+        if (dbUser != null) {
             throw new EventException(null, new Result(user.getAccountIdentifier(), "ALREADY_ASSIGNED", null, false), HttpStatus.OK);
         }
         try {
             dbService.addUser(user);
         } catch (Exception x) {
-            throw new EventException(x, new Result(user.getAccountIdentifier(), "ALREADY_ASSIGNED", null, false), HttpStatus.OK);
+            throw new EventException(x, new Result(user.getAccountIdentifier(), "INVALID_RESPONSE", null, false), HttpStatus.OK);
         }
     }
 
     public void unAssignUser(AppDirectUser user) throws EventException {
-        if (!dbService.doesUserExist(user)) {
+        AppDirectUser dbUser = dbService.getUserByOpenID(user.getOpenId());
+        if (dbUser == null) {
             throw new EventException(null, new Result(user.getAccountIdentifier(), "USER_NOT_FOUND", "Unable to remove user", false), HttpStatus.OK);
+        }
+        if (dbUser.isAdmin()) {
+            throw new EventException(null, new Result(user.getAccountIdentifier(), "UNAUTHORIZED", "Unable to remove admin user", false), HttpStatus.OK);
         }
         try {
             dbService.deleteUser(user);
         } catch (Exception x) {
-            throw new EventException(x, new Result(user.getAccountIdentifier(), "USER_NOT_FOUND", "Unable to remove user", false), HttpStatus.OK);
+            throw new EventException(x, new Result(user.getAccountIdentifier(), "INVALID_RESPONSE", "Unable to remove user", false), HttpStatus.OK);
         }
     }
 
@@ -88,6 +96,7 @@ public class UserService {
             userMatch = documentMatch.find("user");
         } else {
             userMatch = documentMatch.find("creator");
+            user.setAdmin(true);
         }
         user.setEmail(userMatch.find("email").text());
         user.setFirstName(userMatch.find("firstName").text());
@@ -97,6 +106,7 @@ public class UserService {
         user.setUuid(userMatch.find("uuid").text());
         Match accountMatch = documentMatch.find("account");
         user.setAccountIdentifier(accountMatch.find("accountIdentifier").text());
+        user.setCompany(documentMatch.find("company").find("name").text());
         return user;
     }
 }

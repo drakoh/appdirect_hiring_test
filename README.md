@@ -18,8 +18,10 @@ Db Schema is :
         uuid text,
         open_id text NOT NULL,
         account_identifier text,
-        language text
-    );
+        language text,
+        company text,
+        admin boolean
+     );
 
     ALTER TABLE ONLY "user"
         ADD CONSTRAINT open_id_pk PRIMARY KEY (open_id);

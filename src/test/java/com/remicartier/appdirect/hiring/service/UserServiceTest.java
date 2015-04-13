@@ -11,10 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.UncategorizedScriptException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -54,7 +51,7 @@ public class UserServiceTest {
     @Test
     public void testSubscribeUserAlreadyDefined() {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(true);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(appDirectUser);
         try {
             userService.subscribeUser(appDirectUser);
             fail(); //should trigger exception
@@ -68,7 +65,7 @@ public class UserServiceTest {
     @Test
     public void testSubscribeUserException() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(false);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(null);
         doThrow(new IllegalStateException("?!")).when(dbService).addUser(any(AppDirectUser.class));
         try {
             userService.subscribeUser(appDirectUser);
@@ -82,7 +79,7 @@ public class UserServiceTest {
     @Test
     public void testSubscribeUser() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(false);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(null);
         userService.subscribeUser(appDirectUser);
         verify(dbService).addUser(any(AppDirectUser.class));
     }
@@ -90,7 +87,7 @@ public class UserServiceTest {
     @Test
     public void testUnSubscribeUserNotDefined() {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(false);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(null);
         try {
             userService.unSubscribeUser(appDirectUser);
             fail(); //should trigger exception
@@ -104,7 +101,7 @@ public class UserServiceTest {
     @Test
     public void testUnSubscribeUserException() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(true);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(appDirectUser);
         doThrow(new IllegalStateException("?!")).when(dbService).deleteUser(any(AppDirectUser.class));
         try {
             userService.unSubscribeUser(appDirectUser);
@@ -118,7 +115,7 @@ public class UserServiceTest {
     @Test
     public void testUnSubscribeUser() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(true);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(appDirectUser);
         userService.unSubscribeUser(appDirectUser);
         verify(dbService).deleteUser(any(AppDirectUser.class));
     }
@@ -126,7 +123,7 @@ public class UserServiceTest {
     @Test
     public void testAssignUserAlreadyDefined() {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(true);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(appDirectUser);
         try {
             userService.assignUser(appDirectUser);
             fail(); //should trigger exception
@@ -140,7 +137,7 @@ public class UserServiceTest {
     @Test
     public void testAssignUserException() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(false);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(null);
         doThrow(new IllegalStateException("?!")).when(dbService).addUser(any(AppDirectUser.class));
         try {
             userService.assignUser(appDirectUser);
@@ -154,7 +151,7 @@ public class UserServiceTest {
     @Test
     public void testAssignUser() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(false);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(null);
         userService.assignUser(appDirectUser);
         verify(dbService).addUser(any(AppDirectUser.class));
     }
@@ -162,7 +159,7 @@ public class UserServiceTest {
     @Test
     public void testUnAssignUserNotDefined() {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(false);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(null);
         try {
             userService.unAssignUser(appDirectUser);
             fail(); //should trigger exception
@@ -176,7 +173,7 @@ public class UserServiceTest {
     @Test
     public void testUnAssignUserException() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(true);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(appDirectUser);
         doThrow(new IllegalStateException("?!")).when(dbService).deleteUser(any(AppDirectUser.class));
         try {
             userService.unAssignUser(appDirectUser);
@@ -190,7 +187,7 @@ public class UserServiceTest {
     @Test
     public void testUnAssignUser() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(true);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(appDirectUser);
         userService.unAssignUser(appDirectUser);
         verify(dbService).deleteUser(any(AppDirectUser.class));
     }
@@ -198,7 +195,7 @@ public class UserServiceTest {
     @Test
     public void testChangeUserNotDefined() {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(false);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(null);
         try {
             userService.changeUser(appDirectUser);
             fail(); //should trigger exception
@@ -212,7 +209,7 @@ public class UserServiceTest {
     @Test
     public void testChangeUserException() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(true);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(appDirectUser);
         doThrow(new IllegalStateException("?!")).when(dbService).updateUser(any(AppDirectUser.class));
         try {
             userService.changeUser(appDirectUser);
@@ -226,7 +223,7 @@ public class UserServiceTest {
     @Test
     public void testChangeUser() throws EventException {
         AppDirectUser appDirectUser = new AppDirectUser();
-        when(dbService.doesUserExist(any(AppDirectUser.class))).thenReturn(true);
+        when(dbService.getUserByOpenID(any(String.class))).thenReturn(appDirectUser);
         userService.changeUser(appDirectUser);
         verify(dbService).updateUser(any(AppDirectUser.class));
     }
@@ -256,23 +253,23 @@ public class UserServiceTest {
         user = userService.extractUser(getMatch("dummyOrder.xml"), "SUBSCRIPTION_ORDER");
         assertEquals("AppDirectUser{accountIdentifier='null', email='test-email+creator@appdirect.com', firstName='DummyCreatorFirst', lastName='DummyCreatorLast', language='fr', openId='\n" +
                 "            https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
-                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2', company='Example Company Name', admin=true}", user.toString());
         user = userService.extractUser(getMatch("dummyChange.xml"), "SUBSCRIPTION_CHANGE");
         assertEquals("AppDirectUser{accountIdentifier='dummy-account', email='test-email+creator@appdirect.com', firstName='DummyCreatorFirst', lastName='DummyCreatorLast', language='fr', openId='\n" +
                 "            https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
-                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2', company='null', admin=true}", user.toString());
         user = userService.extractUser(getMatch("dummyCancel.xml"), "SUBSCRIPTION_CANCEL");
         assertEquals("AppDirectUser{accountIdentifier='dummy-account', email='test-email+creator@appdirect.com', firstName='DummyCreatorFirst', lastName='DummyCreatorLast', language='fr', openId='\n" +
                 "            https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
-                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+                "        ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2', company='null', admin=true}", user.toString());
         user = userService.extractUser(getMatch("dummyAssign.xml"), "USER_ASSIGNMENT");
         assertEquals("AppDirectUser{accountIdentifier='dummy-account', email='test-email@appdirect.com', firstName='DummyFirst', lastName='DummyLast', language='fr', openId='\n" +
                 "                https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
-                "            ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+                "            ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2', company='null', admin=false}", user.toString());
         user = userService.extractUser(getMatch("dummyUnassign.xml"), "USER_UNASSIGNMENT");
         assertEquals("AppDirectUser{accountIdentifier='dummy-account', email='test-email@appdirect.com', firstName='DummyFirst', lastName='DummyLast', language='fr', openId='\n" +
                 "                https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2\n" +
-                "            ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2'}", user.toString());
+                "            ', uuid='ec5d8eda-5cec-444d-9e30-125b6e4b67e2', company='null', admin=false}", user.toString());
     }
 
     private Match getMatch(String resource) throws IOException, SAXException {
