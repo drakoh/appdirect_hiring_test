@@ -142,10 +142,10 @@ public class MainController {
     }
 
     protected void processEvent(String xmlResponse) throws IOException, SAXException, EventException {
-        LOGGER.info("XMLResponse = {}", xmlResponse);
         Document document = $(new StringReader(xmlResponse)).document();
         Match match = $(document);
         String eventType = match.find("type").text();
+        LOGGER.info("Event XML ({}) = {}", eventType, xmlResponse);
         AppDirectUser user = userService.extractUser(match, eventType);
         switch (eventType) {
             case TYPE_SUBSCRIPTION_CHANGE:
