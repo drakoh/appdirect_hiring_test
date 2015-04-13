@@ -57,7 +57,7 @@ public class UserServiceTest {
             fail(); //should trigger exception
         } catch (EventException x) {
             assertEquals("com.remicartier.appdirect.hiring.exception.EventException", x.toString());
-            assertEquals("Result{accountIdentifier='null', success=false, message='null', errorCode='ALREADY_SUBSCRIBED'}", x.getResult().toString());
+            assertEquals("Result{accountIdentifier='null', success=false, message='null', errorCode='USER_ALREADY_EXISTS'}", x.getResult().toString());
             assertEquals(HttpStatus.OK, x.getHttpStatus());
         }
     }
@@ -71,7 +71,7 @@ public class UserServiceTest {
             userService.subscribeUser(appDirectUser);
         } catch (EventException x) {
             assertEquals("com.remicartier.appdirect.hiring.exception.EventException: java.lang.IllegalStateException: ?!", x.toString());
-            assertEquals("Result{accountIdentifier='null', success=false, message='null', errorCode='ALREADY_SUBSCRIBED'}", x.getResult().toString());
+            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to subscribe user', errorCode='INVALID_RESPONSE'}", x.getResult().toString());
             assertEquals(HttpStatus.OK, x.getHttpStatus());
         }
     }
@@ -93,7 +93,7 @@ public class UserServiceTest {
             fail(); //should trigger exception
         } catch (EventException x) {
             assertEquals("com.remicartier.appdirect.hiring.exception.EventException", x.toString());
-            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to remove user', errorCode='ACCOUNT_NOT_FOUND'}", x.getResult().toString());
+            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to unsubscribe user', errorCode='ACCOUNT_NOT_FOUND'}", x.getResult().toString());
             assertEquals(HttpStatus.OK, x.getHttpStatus());
         }
     }
@@ -107,7 +107,7 @@ public class UserServiceTest {
             userService.unSubscribeUser(appDirectUser);
         } catch (EventException x) {
             assertEquals("com.remicartier.appdirect.hiring.exception.EventException: java.lang.IllegalStateException: ?!", x.toString());
-            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to remove user', errorCode='ACCOUNT_NOT_FOUND'}", x.getResult().toString());
+            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to unsubscribe user', errorCode='INVALID_RESPONSE'}", x.getResult().toString());
             assertEquals(HttpStatus.OK, x.getHttpStatus());
         }
     }
@@ -143,7 +143,7 @@ public class UserServiceTest {
             userService.assignUser(appDirectUser);
         } catch (EventException x) {
             assertEquals("com.remicartier.appdirect.hiring.exception.EventException: java.lang.IllegalStateException: ?!", x.toString());
-            assertEquals("Result{accountIdentifier='null', success=false, message='null', errorCode='ALREADY_ASSIGNED'}", x.getResult().toString());
+            assertEquals("Result{accountIdentifier='null', success=false, message='null', errorCode='INVALID_RESPONSE'}", x.getResult().toString());
             assertEquals(HttpStatus.OK, x.getHttpStatus());
         }
     }
@@ -179,7 +179,7 @@ public class UserServiceTest {
             userService.unAssignUser(appDirectUser);
         } catch (EventException x) {
             assertEquals("com.remicartier.appdirect.hiring.exception.EventException: java.lang.IllegalStateException: ?!", x.toString());
-            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to remove user', errorCode='USER_NOT_FOUND'}", x.getResult().toString());
+            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to remove user', errorCode='INVALID_RESPONSE'}", x.getResult().toString());
             assertEquals(HttpStatus.OK, x.getHttpStatus());
         }
     }
@@ -215,7 +215,7 @@ public class UserServiceTest {
             userService.changeUser(appDirectUser);
         } catch (EventException x) {
             assertEquals("com.remicartier.appdirect.hiring.exception.EventException: java.lang.IllegalStateException: ?!", x.toString());
-            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to remove user', errorCode='ACCOUNT_NOT_FOUND'}", x.getResult().toString());
+            assertEquals("Result{accountIdentifier='null', success=false, message='Unable to remove user', errorCode='INVALID_RESPONSE'}", x.getResult().toString());
             assertEquals(HttpStatus.OK, x.getHttpStatus());
         }
     }

@@ -61,6 +61,7 @@ public class DBService {
             appDirectUser.setFirstName(resultSet.getString(2));
             appDirectUser.setLastName(resultSet.getString(3));
             appDirectUser.setOpenId(resultSet.getString(4));
+            appDirectUser.setUuid(resultSet.getString(4));
             appDirectUser.setAccountIdentifier(resultSet.getString(5));
             appDirectUser.setLanguage(resultSet.getString(6));
             appDirectUser.setCompany(resultSet.getString(7));

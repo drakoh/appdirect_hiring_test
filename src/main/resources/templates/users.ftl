@@ -67,7 +67,7 @@
                 <td>${user.email!"Not Defined"}</td>
                 <td>${user.openId!"Not Defined"}</td>
                 <td>${user.company!"Not Defined"}</td>
-                <td>${user.admin!"Not Defined"}</td>
+                <td>${user.admin?c}</td>
             </tr>
             </#list>
             </tbody>

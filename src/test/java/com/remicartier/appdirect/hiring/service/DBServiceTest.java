@@ -53,7 +53,7 @@ public class DBServiceTest {
 
         AppDirectUser appDirectUser = mapper.mapRow(resultSet, 0);
 
-        assertEquals("AppDirectUser{accountIdentifier='accoundId', email='email', firstName='firstName', lastName='lastName', language='en', openId='openid', uuid='null', company='company', admin=true}", appDirectUser.toString());
+        assertEquals("AppDirectUser{accountIdentifier='en', email='email', firstName='firstName', lastName='lastName', language='company', openId='openid', uuid='accoundId', company='company', admin=true}", appDirectUser.toString());
     }
 
     @Test
